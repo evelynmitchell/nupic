@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/bin/bash
 # ----------------------------------------------------------------------
 # Numenta Platform for Intelligent Computing (NuPIC)
 # Copyright (C) 2013, Numenta, Inc.  Unless you have an agreement
@@ -20,21 +20,19 @@
 # http://numenta.org/licenses/
 # ----------------------------------------------------------------------
 
-"""Test asteval module is installed."""
+echo
+echo Running `basename $0`...
+echo
 
-import unittest2 as unittest
+# Get Darwin64 libs for OSX
+echo ">>> Cloning nupic-darwin64 at 40eee5d8b4f79fe52b282c393c8e1a1f5ba7a906..."
+git clone https://github.com/numenta/nupic-darwin64.git
+(cd nupic-darwin64 && git reset --hard 40eee5d8b4f79fe52b282c393c8e1a1f5ba7a906) || exit
+echo ">>> Activating nupic-darwin64..."
+source nupic-darwin64/bin/activate
 
-
-
-class TestCase(unittest.TestCase):
-
-
-  def testImportAndVersions(self):
-    import asteval
-    from pkg_resources import parse_version
-    self.assertGreater(parse_version(asteval.__version__), parse_version("0.9"))
-
-
-
-if __name__ == "__main__":
-  unittest.main()
+# Install and start MySQL on OSX
+echo ">>> brew install mysql"
+brew install mysql
+echo ">>> mysql.server start"
+mysql.server start

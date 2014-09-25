@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#! /usr/bin/env python
 # ----------------------------------------------------------------------
 # Numenta Platform for Intelligent Computing (NuPIC)
 # Copyright (C) 2013, Numenta, Inc.  Unless you have an agreement
@@ -19,22 +19,3 @@
 #
 # http://numenta.org/licenses/
 # ----------------------------------------------------------------------
-
-"""Test asteval module is installed."""
-
-import unittest2 as unittest
-
-
-
-class TestCase(unittest.TestCase):
-
-
-  def testImportAndVersions(self):
-    import asteval
-    from pkg_resources import parse_version
-    self.assertGreater(parse_version(asteval.__version__), parse_version("0.9"))
-
-
-
-if __name__ == "__main__":
-  unittest.main()

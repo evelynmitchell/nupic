@@ -26,6 +26,8 @@ Temporal Memory implementation in Python.
 from operator import mul
 
 from nupic.bindings.math import Random
+from nupic.research.temporal_memory_inspect_mixin import (
+  TemporalMemoryInspectMixin)
 
 
 
@@ -311,7 +313,7 @@ class TemporalMemory(object):
       activeCells.update(cells)
 
       (bestCell,
-       bestSegment) = self.getBestMatchingCell(column,
+       bestSegment) = self.getBestMatchingCell(cells,
                                                prevActiveSynapsesForSegment,
                                                connections)
       winnerCells.add(bestCell)
@@ -449,7 +451,7 @@ class TemporalMemory(object):
     return activeSynapsesForSegment
 
 
-  def getBestMatchingCell(self, column, activeSynapsesForSegment, connections):
+  def getBestMatchingCell(self, cells, activeSynapsesForSegment, connections):
     """
     Gets the cell with the best matching segment
     (see `TM.getBestMatchingSegment`) that has the largest number of active
@@ -457,7 +459,7 @@ class TemporalMemory(object):
 
     If none were found, pick the least used cell (see `TM.getLeastUsedCell`).
 
-    @param column                   (int)         Column index
+    @param cells                    (set)         Indices of cells
     @param activeSynapsesForSegment (dict)        Mapping from segments to
                                                   active synapses (see
                                                   `TM.computeActiveSynapses`)
@@ -470,8 +472,6 @@ class TemporalMemory(object):
     maxSynapses = 0
     bestCell = None
     bestSegment = None
-
-    cells = connections.cellsForColumn(column)
 
     for cell in cells:
       (
@@ -487,7 +487,7 @@ class TemporalMemory(object):
         bestSegment = segment
 
     if bestCell == None:
-      bestCell = self.getLeastUsedCell(column, connections)
+      bestCell = self.getLeastUsedCell(cells, connections)
 
     return (bestCell, bestSegment)
 
@@ -526,17 +526,16 @@ class TemporalMemory(object):
     return (bestSegment, connectedActiveSynapses)
 
 
-  def getLeastUsedCell(self, column, connections):
+  def getLeastUsedCell(self, cells, connections):
     """
     Gets the cell with the smallest number of segments.
     Break ties randomly.
 
-    @param column                   (int)         Column index
+    @param cells                    (set)         Indices of cells
     @param connections              (Connections) Connectivity of layer
 
     @return (int) Cell index
     """
-    cells = connections.cellsForColumn(column)
     leastUsedCells = set()
     minNumSegments = float("inf")
 
@@ -933,3 +932,11 @@ class Connections(object):
     """
     if permanence < 0 or permanence > 1:
       raise ValueError("Invalid permanence")
+
+
+
+class InspectTemporalMemory(TemporalMemoryInspectMixin, TemporalMemory):
+  """
+  Temporal Memory subclass that enables detailed inspection of history.
+  """
+  pass

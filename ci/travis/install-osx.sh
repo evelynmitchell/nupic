@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/bin/bash
 # ----------------------------------------------------------------------
 # Numenta Platform for Intelligent Computing (NuPIC)
 # Copyright (C) 2013, Numenta, Inc.  Unless you have an agreement
@@ -20,21 +20,20 @@
 # http://numenta.org/licenses/
 # ----------------------------------------------------------------------
 
-"""Test asteval module is installed."""
+echo
+echo Running `basename $0`...
+echo
 
-import unittest2 as unittest
+# Verify cmake version
+cmake --version
 
+# Verify python version
+python$PY_VER --version
 
+# Build NuPIC
+cd $NUPIC
+python$PY_VER setup.py install --user
 
-class TestCase(unittest.TestCase):
-
-
-  def testImportAndVersions(self):
-    import asteval
-    from pkg_resources import parse_version
-    self.assertGreater(parse_version(asteval.__version__), parse_version("0.9"))
-
-
-
-if __name__ == "__main__":
-  unittest.main()
+# Show nupic installation folder by trying to import nupic, if works, it prints 
+# the absolute path of nupic.__file__, which the installation folder itself.
+python -c 'import sys;import os;import nupic;sys.stdout.write(os.path.abspath(os.path.join(nupic.__file__, "../..")))' || exit
